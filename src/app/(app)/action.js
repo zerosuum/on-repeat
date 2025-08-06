@@ -25,7 +25,6 @@ export async function createRepeatAction(prevState, formData) {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // Gunakan data 'song' dan 'cover' yang asli
       body: JSON.stringify([{ message, song, cover, author: username }]),
     });
 
@@ -48,4 +47,47 @@ export async function createRepeatAction(prevState, formData) {
 export async function searchSongsAction(query) {
   const results = await searchSongsFromSpotify(query);
   return results;
+}
+
+export async function deleteRepeatAction(repeatId) {
+  if (!repeatId) {
+    return { error: "Repeat ID is missing." };
+  }
+
+  const cookieStore = await cookies();
+  const username = cookieStore.get("username")?.value;
+
+  if (!username) {
+    return { error: "You must be logged in." };
+  }
+
+  try {
+    const repeatRes = await fetch(`${API_URL}/${repeatId}`);
+    if (!repeatRes.ok) {
+      throw new Error("Repeat not found.");
+    }
+    const repeatData = await repeatRes.json();
+
+    if (repeatData.author !== username) {
+      return { error: "You are not authorized to delete this repeat." };
+    }
+
+    const deleteRes = await fetch(API_URL, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([repeatId]),
+    });
+
+    if (!deleteRes.ok) {
+      throw new Error("Failed to delete repeat from the database.");
+    }
+
+    revalidatePath("/");
+    return { message: "Repeat deleted successfully!" };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    }
+    return { error: "An unknown error occurred." };
+  }
 }
