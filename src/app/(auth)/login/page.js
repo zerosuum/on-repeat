@@ -5,9 +5,7 @@ import { useActionState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginAction
-
- } from "./action";
+import { loginAction } from "./action";
 export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, null);
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import moment from "moment";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
+import { DeleteButton } from "./DeleteButton";
 async function getRepeats() {
   const api_url = "https://v1.appbackend.io/v1/rows/aj3vz68G55TG";
   try {
@@ -79,7 +79,10 @@ export default async function HomePage() {
                   <Avatar size={20} name={repeat.author} variant="pixel" />
                   Shared by {repeat.author}
                 </div>
-                <span>{moment(repeat.createdAt).format("DD MMM YYYY")}</span>
+                <div className="flex items-center gap-2">
+                  <span>{moment(repeat.createdAt).format("DD MMM YYYY")}</span>
+                  <DeleteButton repeatId={repeat._id} />
+                </div>
               </div>
             </Card>
           ))}

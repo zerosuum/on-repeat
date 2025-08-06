@@ -8,14 +8,17 @@ import { createRepeatAction, searchSongsAction } from "./action";
 import Avatar from "boring-avatars";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function RepeatForm({ username }) {
+  const router = useRouter();
   const formRef = useRef(null);
   const [state, formAction, pending] = useActionState(
     async (prevState, formData) => {
       const result = await createRepeatAction(prevState, formData);
       if (result?.message) {
         toast.success(result.message);
+        router.refresh();
         formRef.current?.reset();
         setSelectedSong(null);
       }
