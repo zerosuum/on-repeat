@@ -1,5 +1,3 @@
-// Path: src/lib/spotify.js
-
 "use server";
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -8,10 +6,7 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 export async function getAccessToken() {
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
-  // ==========================================================
-  // PERBAIKAN #1: Ganti URL ke endpoint asli Spotify
   const response = await fetch("https://accounts.spotify.com/api/token", {
-    // ==========================================================
     method: "POST",
     headers: {
       Authorization: `Basic ${auth}`,
@@ -22,7 +17,7 @@ export async function getAccessToken() {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("❌ Spotify Auth Error (Response Body):", errorText);
+    console.error("Spotify Auth Error:", errorText);
     throw new Error(`Failed to fetch access token. Status: ${response.status}`);
   }
 
@@ -31,37 +26,26 @@ export async function getAccessToken() {
 }
 
 export async function searchSongs(query) {
-  if (!query) {
-    return [];
-  }
-
+  if (!query) return [];
   const accessToken = await getAccessToken();
 
-  // ==========================================================
-  // PERBAIKAN #2: Ganti URL ke endpoint asli Spotify
   const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
     query
   )}&type=track&limit=5`;
-  // ==========================================================
 
   const response = await fetch(searchUrl, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("❌ Spotify Search Error (Response Body):", errorText);
+    console.error("Spotify Search Error:", errorText);
     return [];
   }
 
   const data = await response.json();
   const items = data.tracks?.items;
-
-  if (!items) {
-    return [];
-  }
+  if (!items) return [];
 
   return items.map((item) => ({
     id: item.id,
