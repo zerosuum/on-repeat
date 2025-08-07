@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { Suspense } from "react";
 
-export default function AuthLayout({children}) {
+export default function AuthLayout({ children }) {
   return (
-    <div className="flex items-center justify-center h-screen">{children}</div>
-  )
+    <Suspense fallback={null}>
+      <div className="flex items-center justify-center h-screen">
+        {children}
+      </div>
+    </Suspense>
+  );
 }
