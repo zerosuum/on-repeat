@@ -2,6 +2,7 @@ import { VT323, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/ui/Navbar";
 
 const vt323 = VT323({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           pressStart2P.variable
         )}
       >
+        <Navbar />
         <main className="min-h-screen">{children}</main>
         <Toaster
           position="top-center"
