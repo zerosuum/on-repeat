@@ -7,11 +7,6 @@ import { searchSongs } from "@/lib/spotify";
 
 const API_URL = "https://v1.appbackend.io/v1/rows/aj3vz68G55TG";
 
-export async function searchSongsAction(query) {
-  const result = await searchSongs(query);
-  return result;
-}
-
 export async function getRepeatById(repeatId) {
   if (!repeatId) return null;
   try {
@@ -23,15 +18,20 @@ export async function getRepeatById(repeatId) {
     return null;
   }
 }
+export async function searchSongsAction(query) {
+  const result = await searchSongs(query);
+  return result;
+}
 
 export async function createRepeatAction(formData) {
   const message = formData.get("message");
   const song = formData.get("song");
   const cover = formData.get("cover");
   const previewUrl = formData.get("previewUrl");
+  const to = formData.get("to");
   const username = (await cookies()).get("username")?.value;
 
-  if (!username || !song || !cover || !message) {
+  if (!username || !song || !cover || !message || !to) {
     return { error: "Missing required fields." };
   }
 
@@ -40,7 +40,7 @@ export async function createRepeatAction(formData) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify([
-        { message, song, cover, previewUrl, author: username },
+        { message, song, cover, previewUrl, author: username, to },
       ]),
     });
     if (!response.ok) {
@@ -76,12 +76,18 @@ export async function updateRepeatAction(prevState, formData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _id: id, message }),
     });
-    if (!response.ok) throw new Error("Failed to update repeat.");
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw new Error(errorBody.message || "Failed to update repeat.");
+    }
 
     revalidatePath("/");
     redirect("/");
   } catch (error) {
-    if (error.digest?.includes("NEXT_REDIRECT")) throw error;
+    if (error.digest?.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
     return { error: error instanceof Error ? error.message : "Unknown error." };
   }
 }

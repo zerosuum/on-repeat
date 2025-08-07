@@ -1,18 +1,18 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginAction } from "./action";
 
 export default function LoginPage() {
-  const [state, action, pending] = useActionState(loginAction, null);
+  const [state, action, pending] = useFormState(loginAction, null);
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <div className="w-full sm:max-w-sm p-6 sm:p-8 space-y-6 bg-background border-2 border-border rounded-lg shadow-pixel">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl">on-repeat</h1>
+          <h1 className="text-3xl font-heading">on-repeat</h1>
           <p className="text-muted-foreground">Enter your callsign, Player 1</p>
         </div>
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createRepeatAction, searchSongsAction } from "./action"; // Pastikan searchSongsAction mengembalikan array langsung
+import { createRepeatAction, searchSongsAction } from "./action";
 import Avatar from "boring-avatars";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -23,16 +23,16 @@ export function RepeatForm({ username }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
 
-  // Aksi form yang disederhanakan
   const handleFormAction = async (formData) => {
     startTransition(async () => {
-      const result = await createRepeatAction(formData); // createRepeatAction disederhanakan
+      const result = await createRepeatAction(formData);
       if (result?.message) {
         playSuccessSound();
         toast.success(result.message);
         formRef.current?.reset();
         setSelectedSong(null);
-        router.refresh(); // Refresh halaman untuk melihat data baru
+        router.push("/");
+        router.refresh();
       }
       if (result?.error) {
         toast.error(result.error);
@@ -46,7 +46,6 @@ export function RepeatForm({ username }) {
       return;
     }
     const searchTimeout = setTimeout(async () => {
-      // Pastikan searchSongsAction mengembalikan array langsung, bukan objek {success, data}
       const result = await searchSongsAction(searchQuery);
       setSearchResults(Array.isArray(result.data) ? result.data : []);
     }, 500);
@@ -66,48 +65,58 @@ export function RepeatForm({ username }) {
       action={handleFormAction}
       className="space-y-4 border-2 bg-background/50 border-border p-4 sm:p-6 rounded-lg shadow-pixel"
     >
-      <h2 className="text-lg font-semibold">
-        WHAT'S ON REPEAT, {username.toUpperCase()}?
-      </h2>
+      <div className="space-y-1">
+        <label htmlFor="to" className="text-sm font-medium text-primary">
+          To (Player 2's Name)
+        </label>
+        <Input
+          name="to"
+          id="to"
+          placeholder="lover"
+          required
+          className="bg-background/80"
+        />
+      </div>
 
-      <Textarea
-        name="message"
-        placeholder="Share a feeling, a memory, a thought..."
-        required
-        minLength={3}
-        className="bg-background/80 rounded-none border-2 border-border focus:border-primary"
-      />
+      <div className="space-y-1">
+        <label htmlFor="message" className="text-sm font-medium text-primary">
+          Your Message
+        </label>
+        <Textarea
+          name="message"
+          id="message"
+          placeholder="Share a feeling, a memory, a thought..."
+          required
+          minLength={3}
+          className="bg-background/80"
+        />
+      </div>
 
-      <AnimatePresence>
-        {selectedSong && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center gap-3 p-3 bg-muted/80 border-2 border-border rounded-md"
-          >
-            <Image
-              src={selectedSong.coverUrl}
-              alt={selectedSong.title}
-              width={40}
-              height={40}
-              className="rounded-none border-2 border-border"
-            />
-            <div className="text-sm">
-              <p className="font-semibold">{selectedSong.title}</p>
-              <p className="text-muted-foreground">{selectedSong.artist}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {selectedSong && (
+        <div className="flex items-center gap-3 p-3 bg-muted/80 border-2 border-border rounded-md">
+          <Image
+            src={selectedSong.coverUrl}
+            alt={selectedSong.title}
+            width={40}
+            height={40}
+            className="rounded-none border-2 border-border"
+          />
+          <div className="text-sm">
+            <p className="font-semibold">{selectedSong.title}</p>
+            <p className="text-muted-foreground">{selectedSong.artist}</p>
+          </div>
+        </div>
+      )}
 
-      <div className="relative">
+      <div className="relative space-y-1">
+        <label className="text-sm font-medium text-primary">Soundtrack</label>
         <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search for a song..."
-          required={!selectedSong} // Input ini wajib diisi JIKA belum ada lagu yang dipilih
+          required={!selectedSong}
           autoComplete="off"
-          className="bg-background/80 rounded-none border-2 border-border focus:border-primary"
+          className="bg-background/80"
         />
         <AnimatePresence>
           {searchResults.length > 0 && (
@@ -161,7 +170,7 @@ export function RepeatForm({ username }) {
         </div>
         <Button
           type="submit"
-          disabled={isPending || !selectedSong} // Tombol mati jika sedang loading ATAU belum ada lagu dipilih
+          disabled={isPending || !selectedSong}
           className="font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80"
         >
           {isPending ? "SENDING..." : "LAUNCH MIXTAPE!"}
