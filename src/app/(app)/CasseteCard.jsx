@@ -68,8 +68,8 @@ export function CassetteCard({ repeat, isPlaying, onPlay, username }) {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 border-t-2 border-dashed border-border pt-4 mt-4">
-          <div className="relative h-14 w-14 flex-shrink-0 self-center sm:self-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t-2 border-dashed border-border pt-4 mt-4">
+          <div className="relative h-14 w-14 flex-shrink-0 sm:self-auto">
             <Image
               src={repeat.cover || "https://i.imgur.com/3Y1q4k5.png"}
               alt={repeat.song || "Song cover"}
