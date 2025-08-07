@@ -8,7 +8,6 @@ import { useState } from "react";
 
 export function NameSearch({ initialQuery }) {
   const router = useRouter();
-
   const [query, setQuery] = useState(initialQuery);
 
   function handleSearch(e) {
@@ -28,7 +27,7 @@ export function NameSearch({ initialQuery }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for your name to find a mixtape..."
-          className="text-lg py-6"
+          className="py-6 text-base sm:text-lg"
         />
         <Button
           type="submit"

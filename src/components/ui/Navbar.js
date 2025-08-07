@@ -11,11 +11,21 @@ export function Navbar() {
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
-            <Link href="/create">
-              <Button className="font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80">
-                <Send className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Broadcast Mixtape</span>
-              </Button>
+            <Link href="/create" passHref>
+              <>
+                <Button className="hidden sm:flex font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80">
+                  <Send className="w-4 h-4 mr-2" />
+                  Broadcast Mixtape
+                </Button>
+
+                <Button
+                  size="icon"
+                  className="sm:hidden font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80"
+                >
+                  <Send className="w-4 h-4" />
+                  <span className="sr-only">Broadcast Mixtape</span>
+                </Button>
+              </>
             </Link>
           </nav>
         </div>
