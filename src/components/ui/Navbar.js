@@ -13,8 +13,8 @@ export function Navbar() {
           <nav className="flex items-center space-x-1">
             <Link href="/create">
               <Button className="font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80">
-                <Send className="w-4 h-4 mr-2" />
-                Broadcast Mixtape
+                <Send className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Broadcast Mixtape</span>
               </Button>
             </Link>
           </nav>

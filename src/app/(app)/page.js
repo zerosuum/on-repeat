@@ -3,7 +3,11 @@ import { NameSearch } from "./NameSearch";
 import { cookies } from "next/headers";
 
 async function getRepeats(searchQuery) {
-  const apiUrl = "https://v1.appbackend.io/v1/rows/aj3vz68G55TG";
+  let apiUrl = "https://v1.appbackend.io/v1/rows/aj3vz68G55TG";
+
+  if (searchQuery) {
+    apiUrl += `?filter[to][eqi]=${encodeURIComponent(searchQuery)}`;
+  }
 
   try {
     const res = await fetch(apiUrl, { cache: "no-store" });
@@ -36,8 +40,9 @@ export default async function HomePage({ searchParams }) {
   return (
     <div className="container py-8">
       <div className="text-center mb-8 space-y-2">
-        <h1 className="text-4xl font-heading">Find Your Mixtape</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        {/* --- PERUBAHAN DI SINI --- */}
+        <h1 className="text-3xl md:text-4xl font-heading">Find Your Mixtape</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
           Someone might have sent a mixtape just for you. Search your callsign
           to see the mission log.
         </p>
