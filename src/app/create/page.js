@@ -18,13 +18,8 @@ export default function CreatePage() {
           Send a new mixtape to your Player 2.
         </p>
       </div>
-      <div className="mb-8">
-        <RepeatForm username={username} />
-      </div>
-      <div className="text-center text-muted-foreground text-sm">
-        Broadcasting as{" "}
-        <span className="font-semibold text-primary">{username}</span>
-      </div>
+
+      <RepeatForm username={username} />
     </div>
   );
 }
