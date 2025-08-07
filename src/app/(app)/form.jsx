@@ -163,15 +163,15 @@ export function RepeatForm({ username }) {
         </>
       )}
 
-      <div className="flex justify-between items-center pt-2">
-        <div className="text-xs text-muted-foreground flex items-center gap-2">
-          <Avatar size={20} name={username} variant="pixel" />
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-2">
+        <div className="text-xs text-muted-foreground flex items-center gap-2 self-start sm:self-center">
+          <Avatar size={20} name={username} variant="beam" />
           Broadcasting as {username}
         </div>
         <Button
           type="submit"
           disabled={isPending || !selectedSong}
-          className="font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80"
+          className="w-full sm:w-auto font-heading shadow-pixel-sm !text-background bg-secondary hover:bg-secondary/80"
         >
           {isPending ? "SENDING..." : "LAUNCH MIXTAPE!"}
         </Button>
