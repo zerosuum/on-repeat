@@ -2,12 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { searchSongs as searchSongsFromSpotify } from "@/lib/spotify";
 import { redirect } from "next/navigation";
+import { searchSongs } from "@/lib/spotify";
 
 const API_URL = "https://v1.appbackend.io/v1/rows/aj3vz68G55TG";
 
-// READ (ONE)
+export async function searchSongsAction(query) {
+  const result = await searchSongs(query);
+  return result;
+}
+
 export async function getRepeatById(repeatId) {
   if (!repeatId) return null;
   try {
@@ -20,13 +24,12 @@ export async function getRepeatById(repeatId) {
   }
 }
 
-// CREATE
-export async function createRepeatAction(prevState, formData) {
+export async function createRepeatAction(formData) {
   const message = formData.get("message");
   const song = formData.get("song");
   const cover = formData.get("cover");
-  const cookieStore = await cookies();
-  const username = cookieStore.get("username")?.value;
+  const previewUrl = formData.get("previewUrl");
+  const username = (await cookies()).get("username")?.value;
 
   if (!username || !song || !cover || !message) {
     return { error: "Missing required fields." };
@@ -36,9 +39,13 @@ export async function createRepeatAction(prevState, formData) {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify([{ message, song, cover, author: username }]),
+      body: JSON.stringify([
+        { message, song, cover, previewUrl, author: username },
+      ]),
     });
-    if (!response.ok) throw new Error("Failed to share your repeat.");
+    if (!response.ok) {
+      throw new Error("Failed to share your repeat.");
+    }
     revalidatePath("/");
     return { message: "Successfully shared!" };
   } catch (error) {
@@ -46,12 +53,10 @@ export async function createRepeatAction(prevState, formData) {
   }
 }
 
-// UPDATE
 export async function updateRepeatAction(prevState, formData) {
   const id = formData.get("id");
   const message = formData.get("message");
-  const cookieStore = await cookies();
-  const username = cookieStore.get("username")?.value;
+  const username = (await cookies()).get("username")?.value;
 
   if (!id || !message || !username) {
     return { error: "Missing required fields." };
@@ -81,11 +86,9 @@ export async function updateRepeatAction(prevState, formData) {
   }
 }
 
-// DELETE
 export async function deleteRepeatAction(repeatId) {
   if (!repeatId) return { error: "Repeat ID is missing." };
-  const cookieStore = await cookies();
-  const username = cookieStore.get("username")?.value;
+  const username = (await cookies()).get("username")?.value;
   if (!username) return { error: "You must be logged in." };
 
   try {
@@ -109,9 +112,4 @@ export async function deleteRepeatAction(repeatId) {
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Unknown error." };
   }
-}
-
-// SEARCH (Spotify)
-export async function searchSongsAction(query) {
-  return await searchSongsFromSpotify(query);
 }
