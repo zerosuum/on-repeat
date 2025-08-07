@@ -4,9 +4,13 @@ import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginAction } from "./action";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [state, action, pending] = useFormState(loginAction, null);
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
@@ -17,6 +21,10 @@ export default function LoginPage() {
         </div>
 
         <form action={action} className="space-y-4">
+          {callbackUrl && (
+            <input type="hidden" name="callbackUrl" value={callbackUrl} />
+          )}
+
           <div className="flex items-center gap-2">
             <label
               htmlFor="username"

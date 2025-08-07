@@ -7,7 +7,7 @@ export default function CreatePage() {
   const username = cookieStore.get("username")?.value;
 
   if (!username) {
-    redirect("/login");
+    redirect("/login?callbackUrl=/create");
   }
 
   return (
